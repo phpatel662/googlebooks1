@@ -25,13 +25,18 @@ module.exports = {
         )
       )
       .then(apiBooks =>
-        db.Book.find().then(dbBooks =>
+        db.Book.find({}).then(dbBooks =>
           apiBooks.filter(apiBook =>
-            dbBooks.every(dbBook => dbBook.googleId.toString() !== apiBook.id)
+            {if (dbBooks) {
+              return dbBooks.every(dbBook => dbBook.googleId.toString() !== apiBook.id)
+            }
+            else return false;
+          }
           )
         )
       )
-      .then(books => res.json(books))
+      .then(books => {
+       return res.json(books)})
       .catch(err => res.status(422).json(err));
   }
 };
